@@ -43,7 +43,7 @@ const Header = () => {
 
   return (
     <div>
-      <Navbar bg="dark" variant="dark" style={{ height: "60px" }}>
+      <Navbar variant="dark" style={{ height: "60px",backgroundColor:'#222262' }}>
         <Container>
           <NavLink to="/" className="text-decoration-none text-light mx-3">
             Products
