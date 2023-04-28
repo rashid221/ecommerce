@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from "react";
 import Table from "react-bootstrap/Table";
-import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { DLT,ADD,DEC } from "../redux/actions/action";
 
 const CardsDetails = () => {
     const [data,setData] = useState([]);
     const getdata = useSelector((state) => state.cartreducer.carts);
     //   console.log(getdata);
     const {id} = useParams();
+    
+    const history = useNavigate();
 
+    const dispatch = useDispatch();
     let compare = ()=>{
         let  comparedata = getdata.filter((e)=>{
             return e.id == id;
@@ -20,6 +24,21 @@ const CardsDetails = () => {
     useEffect(()=>{
      compare();
     },[id])
+
+    const send =(e)=>{
+        dispatch(ADD(e));   
+       }
+       
+   const dlt = (id)=>{
+        dispatch(DLT(id));
+        history('/');
+    }
+
+    
+   const dec = (items)=>{
+    dispatch(DEC(items));
+}
+
 
   return (
     <>
@@ -50,17 +69,21 @@ const CardsDetails = () => {
                       <strong>Category</strong> : {ele.category}
                     </p>
                     <p>
-                      <strong>Total</strong> : Masala Theoryyy
-                    </p>
+                      <strong>Total</strong> : {ele.price *ele.qnty}
+                                          </p>
+                   <div className="mt-5 d-flex justify-content-between align-items-center" style={{width:80,cursor:'pointer',backgroundColor:'#ddd',color:'#111'}}>
+                                   <span style={{fontSize:20}} onClick={ele.qnty <=1 ? ()=>dlt(ele.id) : ()=>dec(ele)}>-</span>
+                                   <span style={{fontSize:16}}>{ele.qnty}</span>
+                                   <span style={{fontSize:20}} onClick={()=>send(ele)}>+</span>
+                   </div>
                     <td>
-                    <p>Price: 2200</p>
-                
+                   
                   </td>
                   </td>
                      <td>
                     <p><strong>Rating : </strong><span style={{backgroundColor:'green',color:'#fff',padding:'2px 5px',borderRadius:'5px'}}>{ele.rating.rate} ★</span></p>
                     <p><strong>Order Review : </strong><span> Customer {ele.rating.count} + order placed here recently</span></p>
-                    <p><strong>Remove : </strong><span><i className="fas fa-trash" style={{color:'red',fontSize:'20px',cursor:'pointer'}}></i></span></p>
+                    <p><strong>Remove : </strong><span><i className="fas fa-trash" onClick={()=>dlt(ele.id)} style={{color:'red',fontSize:'20px',cursor:'pointer'}}></i></span></p>
 
                   </td>
                 </tr>

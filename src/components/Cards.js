@@ -18,12 +18,12 @@ const Cards = () => {
 
   return (
     <div className="container mt-3">
-      <h5 className="text-center">Add to Cart Projects</h5>
+      <h5 className="text-center">Products Available</h5>
       <div className="row d-flex justify-content-center align-items-center">
         {data.map((elements, id) => {
           return (
-            <Card
-              style={{ width: "18rem", border: "none", padding: 20 }}
+            <Card 
+              style={{ width: "18rem",height:'30rem', border: "none", padding: 20 }}
               className="mx-2 mt-4 card_style"
               key={id}
             >
@@ -35,7 +35,7 @@ const Cards = () => {
               <Card.Body>
                 <Card.Title>{elements.title}</Card.Title>
                 <Card.Text>₹ {elements.price}</Card.Text>
-                <div className="button_div d-flex justify-content-center flex-end">
+    <div className="button_div d-flex justify-content-center flex-end">
                   <Button variant="primary" className="col-lg-12" onClick={()=>send(elements)}>Add to Cart</Button>
                 </div>
               </Card.Body>

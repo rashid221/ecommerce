@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "react-bootstrap/Navbar";
 import Container from "react-bootstrap/Container";
 import Badge from "@mui/material/Badge";
@@ -6,10 +6,15 @@ import Nav from "react-bootstrap/Nav";
 import { NavLink } from "react-router-dom";
 import Menu from "@mui/material/Menu";
 import cartImg from "../Images/372 (2).gif";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Table } from "react-bootstrap";
+import { DLT } from "../redux/actions/action";
+
 const Header = () => {
+  const [price, setPrice] = useState(0);
   const getdata = useSelector((state) => state.cartreducer.carts);
+
+  const dispatch = useDispatch();
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -20,12 +25,28 @@ const Header = () => {
     setAnchorEl(null);
   };
 
+  const dlt = (id) => {
+    dispatch(DLT(id));
+  };
+
+  const total = () => {
+    let price = 0;
+    getdata.map((ele, k) => {
+      price = ele.price*ele.qnty + price;
+    });
+    setPrice(price);
+  };
+
+  useEffect(() => {
+    total();
+  },[total]);
+
   return (
     <div>
       <Navbar bg="dark" variant="dark" style={{ height: "60px" }}>
         <Container>
           <NavLink to="/" className="text-decoration-none text-light mx-3">
-            Add to Cart
+            Products
           </NavLink>
           <Nav className="me-auto">
             <NavLink to="/" className="text-decoration-none text-light">
@@ -61,39 +82,61 @@ const Header = () => {
           {getdata.length ? (
             <div
               className="card-details"
-              style={{ width: "24rem", padding: "10px" }}
+              style={{ width: "30rem", padding: "10px" }}
             >
               <Table>
                 <thead>
                   <tr>
                     <th>Photo</th>
-                    <th>Restaurant Name</th>
+                    <th>Product Name</th>
                   </tr>
                 </thead>
                 <tbody>
-                   {
-                    getdata.map((e)=>{
-                       return (<>
-                       <tr>
-                        <td>
-                          <NavLink to={`/cart/${e.id}`}>
-                              <img src={e.image} style={{width:'5rem',height:'5rem'}} alt=" "/>
-                          </NavLink>
+                  {getdata.map((e) => {
+                    return (
+                      <>
+                        <tr>
+                          <td>
+                            <NavLink to={`/cart/${e.id}`}>
+                              <img
+                                src={e.image}
+                                style={{ width: "5rem", height: "5rem" }}
+                                onClick={handleClose}
+                                alt=" "
+                              />
+                            </NavLink>
                           </td>
-                        <td>
-                          <p>{e.title}</p> 
-                          <p>Price : ₹ {e.price}</p> 
-                          <p>Quantity :  {e.rating.rate}</p> 
-                          <p style={{color:'red',fontSize:'20px',cursor:'pointer'}}><i className="fas fa-trash smalltrash"></i></p>
-                        </td>
-                        <td className="mt-5" style={{color:'red',fontSize:'20px',cursor:'pointer'}}>
-                        <i className="fas fa-trash largetrash"></i>
-                        </td>
-                       </tr>
-                       </>)
-                    })
-                   }
-                   <p className="text-center">Total : ₹ 300</p>
+                          <td>
+                            <p>{e.title}</p>
+                            <p>Price : ₹ {e.price}</p>
+                            <p>Quantity : {e.qnty}</p>
+                            <p
+                              style={{
+                                color: "red",
+                                fontSize: "20px",
+                                cursor: "pointer",
+                              }}
+                              onClick={() => dlt(e.id)}
+                            >
+                              <i className="fas fa-trash smalltrash"></i>
+                            </p>
+                          </td>
+                          <td
+                            className="mt-5"
+                            style={{
+                              color: "red",
+                              fontSize: "20px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => dlt(e.id)}
+                          >
+                            <i className="fas fa-trash largetrash"></i>
+                          </td>
+                        </tr>
+                      </>
+                    );
+                  })}
+                  <p className="text-center">Total :₹ {price}</p>
                 </tbody>
               </Table>
             </div>
